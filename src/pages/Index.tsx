@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Icon from '@/components/ui/icon';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
+import { toast } from '@/hooks/use-toast';
 
 type Product = {
   id: number;
@@ -14,12 +15,14 @@ type Product = {
   category: string;
 };
 
+type CartItem = Product & { quantity: number };
+
 const products: Product[] = [
   {
     id: 1,
     name: 'Авокадо Хасс',
     price: 450,
-    image: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=400&h=300&fit=crop',
+    image: 'https://cdn.poehali.dev/projects/2e16a370-d921-4deb-affb-11d587fc8bd8/files/c69b9bcb-a3ab-4dec-a0e9-ff4e89257cd9.jpg',
     isSeasonal: true,
     isFresh: true,
     category: 'Фрукты'
@@ -37,7 +40,7 @@ const products: Product[] = [
     id: 3,
     name: 'Манго',
     price: 520,
-    image: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=400&h=300&fit=crop',
+    image: 'https://cdn.poehali.dev/projects/2e16a370-d921-4deb-affb-11d587fc8bd8/files/58678b3b-b879-46fc-b8ea-e0ee3984fc52.jpg',
     isSeasonal: true,
     isFresh: true,
     category: 'Фрукты'
@@ -55,7 +58,7 @@ const products: Product[] = [
     id: 5,
     name: 'Инжир',
     price: 890,
-    image: 'https://images.unsplash.com/photo-1568524651863-36b7d55baa82?w=400&h=300&fit=crop',
+    image: 'https://cdn.poehali.dev/projects/2e16a370-d921-4deb-affb-11d587fc8bd8/files/82c9d717-f0e3-473b-95e2-0d77c11b0754.jpg',
     isSeasonal: true,
     isFresh: true,
     category: 'Фрукты'
@@ -72,11 +75,52 @@ const products: Product[] = [
 ];
 
 const Index = () => {
-  const [activeSection, setActiveSection] = useState('home');
+  const [activeSection, setActiveSection] = useState('главная');
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [filterSeasonal, setFilterSeasonal] = useState(false);
+  const [filterFresh, setFilterFresh] = useState(false);
+
+  const filteredProducts = useMemo(() => {
+    return products.filter(product => {
+      if (filterSeasonal && !product.isSeasonal) return false;
+      if (filterFresh && !product.isFresh) return false;
+      return true;
+    });
+  }, [filterSeasonal, filterFresh]);
+
+  const addToCart = (product: Product) => {
+    setCart(prev => {
+      const existing = prev.find(item => item.id === product.id);
+      if (existing) {
+        return prev.map(item =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+      return [...prev, { ...product, quantity: 1 }];
+    });
+    toast({
+      title: "Добавлено в корзину",
+      description: `${product.name} — ${product.price}₽`,
+    });
+  };
+
+  const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const cartItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  const scrollToCatalog = () => {
+    document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleSeasonalFilter = () => {
+    setFilterSeasonal(!filterSeasonal);
+    scrollToCatalog();
+  };
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border">
+      <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-sm border-b border-border">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -105,9 +149,14 @@ const Index = () => {
               ))}
             </nav>
 
-            <Button size="sm" className="hidden md:flex gap-2">
+            <Button size="sm" className="hidden md:flex gap-2 relative">
               <Icon name="ShoppingCart" size={18} />
               Корзина
+              {cartItemsCount > 0 && (
+                <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 rounded-full">
+                  {cartItemsCount}
+                </Badge>
+              )}
             </Button>
 
             <Button size="icon" variant="ghost" className="md:hidden">
@@ -128,11 +177,11 @@ const Index = () => {
                 Отборные овощи и фрукты с лучших ферм мира. Доставка свежести к вашему столу каждый день.
               </p>
               <div className="flex gap-4 justify-center flex-wrap">
-                <Button size="lg" className="gap-2">
+                <Button size="lg" className="gap-2" onClick={scrollToCatalog}>
                   <Icon name="ShoppingBag" size={20} />
                   Смотреть каталог
                 </Button>
-                <Button size="lg" variant="outline" className="gap-2">
+                <Button size="lg" variant="outline" className="gap-2" onClick={handleSeasonalFilter}>
                   <Icon name="Leaf" size={20} />
                   Сезонные продукты
                 </Button>
@@ -141,71 +190,109 @@ const Index = () => {
           </div>
         </section>
 
-        <section className="py-16 bg-white">
+        <section id="catalog" className="py-16 bg-card">
           <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between mb-10">
+            <div className="flex items-center justify-between mb-10 flex-wrap gap-4">
               <div>
                 <h3 className="text-3xl font-bold mb-2">Наш каталог</h3>
                 <p className="text-muted-foreground">Премиальные продукты для вашего здоровья</p>
               </div>
               <div className="flex gap-3">
-                <Button variant="outline" size="sm" className="gap-2">
+                <Button 
+                  variant={filterSeasonal ? "default" : "outline"} 
+                  size="sm" 
+                  className="gap-2"
+                  onClick={() => setFilterSeasonal(!filterSeasonal)}
+                >
                   <Icon name="Leaf" size={16} />
                   Сезонное
                 </Button>
-                <Button variant="outline" size="sm" className="gap-2">
+                <Button 
+                  variant={filterFresh ? "default" : "outline"} 
+                  size="sm" 
+                  className="gap-2"
+                  onClick={() => setFilterFresh(!filterFresh)}
+                >
                   <Icon name="Sparkles" size={16} />
                   Свежее
                 </Button>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {products.map((product, index) => (
-                <Card 
-                  key={product.id} 
-                  className="group overflow-hidden hover:shadow-lg transition-all duration-300 animate-scale-in"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <div className="relative overflow-hidden aspect-[4/3]">
-                    <img 
-                      src={product.image} 
-                      alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute top-3 right-3 flex flex-col gap-2">
-                      {product.isSeasonal && (
-                        <Badge className="bg-primary text-primary-foreground shadow-md gap-1">
-                          <Icon name="Leaf" size={12} />
-                          Сезонное
-                        </Badge>
-                      )}
-                      {product.isFresh && (
-                        <Badge className="bg-emerald-500 text-white shadow-md gap-1">
-                          <Icon name="Sparkles" size={12} />
-                          Свежее
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                  <div className="p-5">
-                    <div className="flex items-start justify-between mb-2">
-                      <div>
-                        <p className="text-xs text-muted-foreground mb-1">{product.category}</p>
-                        <h4 className="font-semibold text-lg">{product.name}</h4>
+            {filteredProducts.length === 0 ? (
+              <div className="text-center py-12">
+                <Icon name="PackageX" size={48} className="mx-auto mb-4 text-muted-foreground" />
+                <p className="text-muted-foreground">Нет товаров по выбранным фильтрам</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredProducts.map((product, index) => (
+                  <Card 
+                    key={product.id} 
+                    className="group overflow-hidden hover:shadow-lg transition-all duration-300 animate-scale-in"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    <div className="relative overflow-hidden aspect-[4/3]">
+                      <img 
+                        src={product.image} 
+                        alt={product.name}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                      <div className="absolute top-3 right-3 flex flex-col gap-2">
+                        {product.isSeasonal && (
+                          <Badge className="bg-primary text-primary-foreground shadow-md gap-1">
+                            <Icon name="Leaf" size={12} />
+                            Сезонное
+                          </Badge>
+                        )}
+                        {product.isFresh && (
+                          <Badge className="bg-emerald-500 text-white shadow-md gap-1">
+                            <Icon name="Sparkles" size={12} />
+                            Свежее
+                          </Badge>
+                        )}
                       </div>
-                      <p className="text-xl font-bold text-primary">{product.price}₽</p>
                     </div>
-                    <Button className="w-full mt-4 gap-2" variant="outline">
-                      <Icon name="Plus" size={16} />
-                      В корзину
-                    </Button>
-                  </div>
-                </Card>
-              ))}
-            </div>
+                    <div className="p-5">
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <p className="text-xs text-muted-foreground mb-1">{product.category}</p>
+                          <h4 className="font-semibold text-lg">{product.name}</h4>
+                        </div>
+                        <p className="text-xl font-bold text-primary">{product.price}₽</p>
+                      </div>
+                      <Button 
+                        className="w-full mt-4 gap-2" 
+                        variant="outline"
+                        onClick={() => addToCart(product)}
+                      >
+                        <Icon name="Plus" size={16} />
+                        В корзину
+                      </Button>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
           </div>
         </section>
+
+        {cartItemsCount > 0 && (
+          <section className="py-8 bg-primary/10 border-y border-border">
+            <div className="container mx-auto px-4">
+              <div className="flex items-center justify-between max-w-4xl mx-auto">
+                <div>
+                  <p className="text-sm text-muted-foreground">В корзине товаров: {cartItemsCount}</p>
+                  <p className="text-2xl font-bold text-foreground">Итого: {cartTotal}₽</p>
+                </div>
+                <Button size="lg" className="gap-2">
+                  <Icon name="ShoppingCart" size={20} />
+                  Оформить заказ
+                </Button>
+              </div>
+            </div>
+          </section>
+        )}
 
         <section className="py-16 bg-primary/5">
           <div className="container mx-auto px-4">
@@ -244,14 +331,14 @@ const Index = () => {
           </div>
         </section>
 
-        <section className="py-16 bg-white">
+        <section className="py-16 bg-card">
           <div className="container mx-auto px-4 text-center">
             <div className="max-w-2xl mx-auto">
               <h3 className="text-3xl font-bold mb-4">Готовы попробовать?</h3>
               <p className="text-muted-foreground mb-8">
                 Присоединяйтесь к тысячам довольных клиентов, выбравших премиальное качество
               </p>
-              <Button size="lg" className="gap-2">
+              <Button size="lg" className="gap-2" onClick={scrollToCatalog}>
                 <Icon name="ShoppingBag" size={20} />
                 Начать покупки
               </Button>
