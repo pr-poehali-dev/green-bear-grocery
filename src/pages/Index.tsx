@@ -31,7 +31,7 @@ const products: Product[] = [
     id: 2,
     name: 'Томаты Черри',
     price: 380,
-    image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400&h=300&fit=crop',
+    image: 'https://cdn.poehali.dev/projects/2e16a370-d921-4deb-affb-11d587fc8bd8/files/0ed2ec32-8967-4bee-850c-39f8f41dcc42.jpg',
     isSeasonal: false,
     isFresh: true,
     category: 'Овощи'
@@ -49,9 +49,9 @@ const products: Product[] = [
     id: 4,
     name: 'Спаржа Зеленая',
     price: 680,
-    image: 'https://images.unsplash.com/photo-1550689943-7c35ab34d4b7?w=400&h=300&fit=crop',
+    image: 'https://cdn.poehali.dev/projects/2e16a370-d921-4deb-affb-11d587fc8bd8/files/b6aa6a38-6d40-4063-a8d3-f6700202550b.jpg',
     isSeasonal: true,
-    isFresh: false,
+    isFresh: true,
     category: 'Овощи'
   },
   {
@@ -67,10 +67,64 @@ const products: Product[] = [
     id: 6,
     name: 'Артишоки',
     price: 750,
-    image: 'https://images.unsplash.com/photo-1612623547025-e0e4a0ad8a6d?w=400&h=300&fit=crop',
+    image: 'https://cdn.poehali.dev/projects/2e16a370-d921-4deb-affb-11d587fc8bd8/files/fca2f8fd-f552-4598-be49-6cd775e0db86.jpg',
     isSeasonal: false,
     isFresh: true,
     category: 'Овощи'
+  },
+  {
+    id: 7,
+    name: 'Апельсины Валенсия',
+    price: 320,
+    image: 'https://cdn.poehali.dev/projects/2e16a370-d921-4deb-affb-11d587fc8bd8/files/e404214e-4812-429b-b6a7-d9260b1e97bb.jpg',
+    isSeasonal: true,
+    isFresh: true,
+    category: 'Фрукты'
+  },
+  {
+    id: 8,
+    name: 'Маракуйя',
+    price: 650,
+    image: 'https://cdn.poehali.dev/projects/2e16a370-d921-4deb-affb-11d587fc8bd8/files/9876bf70-8c8d-40be-bf60-f26120595725.jpg',
+    isSeasonal: true,
+    isFresh: true,
+    category: 'Фрукты'
+  },
+  {
+    id: 9,
+    name: 'Перец Разноцветный',
+    price: 420,
+    image: 'https://cdn.poehali.dev/projects/2e16a370-d921-4deb-affb-11d587fc8bd8/files/623aee0b-dc62-4a57-9dce-d3fba73a4094.jpg',
+    isSeasonal: false,
+    isFresh: true,
+    category: 'Овощи'
+  },
+  {
+    id: 10,
+    name: 'Голубика',
+    price: 980,
+    image: 'https://cdn.poehali.dev/projects/2e16a370-d921-4deb-affb-11d587fc8bd8/files/95986922-5808-42d7-8724-bdd9587e5544.jpg',
+    isSeasonal: true,
+    isFresh: true,
+    category: 'Ягоды'
+  },
+  {
+    id: 11,
+    name: 'Руккола',
+    price: 280,
+    image: 'https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?w=400&h=300&fit=crop',
+    isSeasonal: false,
+    isFresh: true,
+    category: 'Зелень'
+  },
+  {
+    id: 12,
+    name: 'Киви Золотой',
+    price: 590,
+    image: 'https://images.unsplash.com/photo-1585059895524-72359e06133a?w=400&h=300&fit=crop',
+    isSeasonal: false,
+    isFresh: true,
+    category: 'Фрукты'
   }
 ];
 
