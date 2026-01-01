@@ -1,12 +1,311 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import Icon from '@/components/ui/icon';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
+
+type Product = {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  isSeasonal: boolean;
+  isFresh: boolean;
+  category: string;
+};
+
+const products: Product[] = [
+  {
+    id: 1,
+    name: 'Авокадо Хасс',
+    price: 450,
+    image: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=400&h=300&fit=crop',
+    isSeasonal: true,
+    isFresh: true,
+    category: 'Фрукты'
+  },
+  {
+    id: 2,
+    name: 'Томаты Черри',
+    price: 380,
+    image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400&h=300&fit=crop',
+    isSeasonal: false,
+    isFresh: true,
+    category: 'Овощи'
+  },
+  {
+    id: 3,
+    name: 'Манго',
+    price: 520,
+    image: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=400&h=300&fit=crop',
+    isSeasonal: true,
+    isFresh: true,
+    category: 'Фрукты'
+  },
+  {
+    id: 4,
+    name: 'Спаржа Зеленая',
+    price: 680,
+    image: 'https://images.unsplash.com/photo-1550689943-7c35ab34d4b7?w=400&h=300&fit=crop',
+    isSeasonal: true,
+    isFresh: false,
+    category: 'Овощи'
+  },
+  {
+    id: 5,
+    name: 'Инжир',
+    price: 890,
+    image: 'https://images.unsplash.com/photo-1568524651863-36b7d55baa82?w=400&h=300&fit=crop',
+    isSeasonal: true,
+    isFresh: true,
+    category: 'Фрукты'
+  },
+  {
+    id: 6,
+    name: 'Артишоки',
+    price: 750,
+    image: 'https://images.unsplash.com/photo-1612623547025-e0e4a0ad8a6d?w=400&h=300&fit=crop',
+    isSeasonal: false,
+    isFresh: true,
+    category: 'Овощи'
+  }
+];
 
 const Index = () => {
+  const [activeSection, setActiveSection] = useState('home');
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4 color-black text-black">Добро пожаловать!</h1>
-        <p className="text-xl text-gray-600">тут будет отображаться ваш проект</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <img 
+                src="https://cdn.poehali.dev/projects/2e16a370-d921-4deb-affb-11d587fc8bd8/files/8921846c-9d70-41fb-8e05-07d8e1272adc.jpg" 
+                alt="Зеленый медведь" 
+                className="w-12 h-12 object-contain"
+              />
+              <div>
+                <h1 className="text-2xl font-bold text-primary">GreenBear</h1>
+                <p className="text-xs text-muted-foreground">Премиальные овощи и фрукты</p>
+              </div>
+            </div>
+
+            <nav className="hidden md:flex items-center gap-6">
+              {['Главная', 'Каталог', 'О магазине', 'Доставка', 'Блог', 'Контакты'].map((item) => (
+                <button
+                  key={item}
+                  onClick={() => setActiveSection(item.toLowerCase())}
+                  className={`text-sm font-medium transition-colors hover:text-primary ${
+                    activeSection === item.toLowerCase() ? 'text-primary' : 'text-foreground'
+                  }`}
+                >
+                  {item}
+                </button>
+              ))}
+            </nav>
+
+            <Button size="sm" className="hidden md:flex gap-2">
+              <Icon name="ShoppingCart" size={18} />
+              Корзина
+            </Button>
+
+            <Button size="icon" variant="ghost" className="md:hidden">
+              <Icon name="Menu" size={24} />
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section className="relative bg-gradient-to-br from-primary/5 via-background to-primary/10 py-20 overflow-hidden">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto text-center animate-fade-in">
+              <h2 className="text-5xl md:text-6xl font-bold mb-6 text-foreground">
+                Свежесть премиум-класса
+              </h2>
+              <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+                Отборные овощи и фрукты с лучших ферм мира. Доставка свежести к вашему столу каждый день.
+              </p>
+              <div className="flex gap-4 justify-center flex-wrap">
+                <Button size="lg" className="gap-2">
+                  <Icon name="ShoppingBag" size={20} />
+                  Смотреть каталог
+                </Button>
+                <Button size="lg" variant="outline" className="gap-2">
+                  <Icon name="Leaf" size={20} />
+                  Сезонные продукты
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="flex items-center justify-between mb-10">
+              <div>
+                <h3 className="text-3xl font-bold mb-2">Наш каталог</h3>
+                <p className="text-muted-foreground">Премиальные продукты для вашего здоровья</p>
+              </div>
+              <div className="flex gap-3">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Icon name="Leaf" size={16} />
+                  Сезонное
+                </Button>
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Icon name="Sparkles" size={16} />
+                  Свежее
+                </Button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {products.map((product, index) => (
+                <Card 
+                  key={product.id} 
+                  className="group overflow-hidden hover:shadow-lg transition-all duration-300 animate-scale-in"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <div className="relative overflow-hidden aspect-[4/3]">
+                    <img 
+                      src={product.image} 
+                      alt={product.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute top-3 right-3 flex flex-col gap-2">
+                      {product.isSeasonal && (
+                        <Badge className="bg-primary text-primary-foreground shadow-md gap-1">
+                          <Icon name="Leaf" size={12} />
+                          Сезонное
+                        </Badge>
+                      )}
+                      {product.isFresh && (
+                        <Badge className="bg-emerald-500 text-white shadow-md gap-1">
+                          <Icon name="Sparkles" size={12} />
+                          Свежее
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                  <div className="p-5">
+                    <div className="flex items-start justify-between mb-2">
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-1">{product.category}</p>
+                        <h4 className="font-semibold text-lg">{product.name}</h4>
+                      </div>
+                      <p className="text-xl font-bold text-primary">{product.price}₽</p>
+                    </div>
+                    <Button className="w-full mt-4 gap-2" variant="outline">
+                      <Icon name="Plus" size={16} />
+                      В корзину
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16 bg-primary/5">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <h3 className="text-3xl font-bold text-center mb-12">Почему выбирают нас</h3>
+              <div className="grid md:grid-cols-3 gap-8">
+                <div className="text-center animate-fade-in">
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Icon name="Leaf" size={32} className="text-primary" />
+                  </div>
+                  <h4 className="font-semibold text-lg mb-2">100% Органика</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Только натуральные продукты без пестицидов и химикатов
+                  </p>
+                </div>
+                <div className="text-center animate-fade-in" style={{ animationDelay: '200ms' }}>
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Icon name="Truck" size={32} className="text-primary" />
+                  </div>
+                  <h4 className="font-semibold text-lg mb-2">Быстрая доставка</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Доставим свежие продукты в течение 2 часов
+                  </p>
+                </div>
+                <div className="text-center animate-fade-in" style={{ animationDelay: '400ms' }}>
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Icon name="Award" size={32} className="text-primary" />
+                  </div>
+                  <h4 className="font-semibold text-lg mb-2">Премиум качество</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Тщательный отбор от лучших фермеров мира
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-4 text-center">
+            <div className="max-w-2xl mx-auto">
+              <h3 className="text-3xl font-bold mb-4">Готовы попробовать?</h3>
+              <p className="text-muted-foreground mb-8">
+                Присоединяйтесь к тысячам довольных клиентов, выбравших премиальное качество
+              </p>
+              <Button size="lg" className="gap-2">
+                <Icon name="ShoppingBag" size={20} />
+                Начать покупки
+              </Button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className="bg-foreground text-background py-12">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <img 
+                  src="https://cdn.poehali.dev/projects/2e16a370-d921-4deb-affb-11d587fc8bd8/files/8921846c-9d70-41fb-8e05-07d8e1272adc.jpg" 
+                  alt="GreenBear" 
+                  className="w-10 h-10 object-contain brightness-0 invert"
+                />
+                <span className="font-bold text-xl">GreenBear</span>
+              </div>
+              <p className="text-sm opacity-80">
+                Премиальные овощи и фрукты для вашего здоровья
+              </p>
+            </div>
+            <div>
+              <h5 className="font-semibold mb-4">Магазин</h5>
+              <ul className="space-y-2 text-sm opacity-80">
+                <li><a href="#" className="hover:opacity-100 transition-opacity">Каталог</a></li>
+                <li><a href="#" className="hover:opacity-100 transition-opacity">Сезонные товары</a></li>
+                <li><a href="#" className="hover:opacity-100 transition-opacity">Акции</a></li>
+              </ul>
+            </div>
+            <div>
+              <h5 className="font-semibold mb-4">Информация</h5>
+              <ul className="space-y-2 text-sm opacity-80">
+                <li><a href="#" className="hover:opacity-100 transition-opacity">О магазине</a></li>
+                <li><a href="#" className="hover:opacity-100 transition-opacity">Доставка</a></li>
+                <li><a href="#" className="hover:opacity-100 transition-opacity">Блог</a></li>
+              </ul>
+            </div>
+            <div>
+              <h5 className="font-semibold mb-4">Контакты</h5>
+              <ul className="space-y-2 text-sm opacity-80">
+                <li>+7 (495) 123-45-67</li>
+                <li>info@greenbear.ru</li>
+                <li>Москва, ул. Примерная, 1</li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-background/20 pt-6 text-center text-sm opacity-60">
+            © 2024 GreenBear. Все права защищены.
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
